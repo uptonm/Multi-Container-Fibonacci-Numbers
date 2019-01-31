@@ -14,7 +14,7 @@ class Fib extends Component {
   }
 
   async fetchValues() {
-    const values = await axios.get('/apis/values/current');
+    const values = await axios.get('/api/values/current');
     this.setState({ values: values.data });
   }
 
@@ -24,6 +24,7 @@ class Fib extends Component {
   }
 
   renderSeenIndexes() {
+    console.log(this.state.seenIndexes);
     return this.state.seenIndexes.map(({ number }) => number).join(', ');
   }
 
@@ -33,7 +34,9 @@ class Fib extends Component {
     for (let key in this.state.values) {
       entries.push(
         <div key={key}>
-          For index {key}, I calculated {this.state.values[key]}
+          <p>
+            For index {key}, I calculated {this.state.values[key]}
+          </p>
         </div>
       );
     }
@@ -43,29 +46,52 @@ class Fib extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-    await axios.post('/api/values', {
-      index: this.state.index
-    });
+    this.setState(
+      {
+        seenIndexes: [
+          ...this.state.seenIndexes,
+          { number: parseInt(this.state.index) }
+        ]
+      },
+      () => console.log(this.state.seenIndexes)
+    );
+
+    // await axios.post('/api/values', {
+    //   index: this.state.index
+    // });
     this.setState({ index: '' });
   };
 
   render() {
     return (
-      <div>
+      <div className="container text-center">
         <form onSubmit={this.handleSubmit}>
-          <label htmlFor="index">Enter your index</label>
-          <input
-            id="index"
-            type="text"
-            value={this.state.index}
-            onChange={event => this.setState({ index: event.target.value })}
-          />
-          <button type="submit">Submit</button>
+          <h1 className="display-3 text-center">Calculate Fibonacci Numbers</h1>
+          <hr />
+          <div className="form-group text-center">
+            <label htmlFor="index">Enter your index</label>
+            <input
+              className="form-control"
+              id="index"
+              type="text"
+              value={this.state.index}
+              onChange={event => this.setState({ index: event.target.value })}
+            />
+          </div>
+          <button
+            className="btn btn-lg btn-primary text-center"
+            type="submit"
+            style={{ marginBottom: '1em' }}
+          >
+            Submit
+          </button>
         </form>
 
         <h3>Indexes I Have Seen:</h3>
+        <hr />
         {this.renderSeenIndexes()}
         <h3>Calculated Values:</h3>
+        <hr />
         {this.renderValues()}
       </div>
     );

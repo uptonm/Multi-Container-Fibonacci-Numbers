@@ -8,10 +8,10 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <header>
+          <navbar>
             <Link to="/">Home</Link>
             <Link to="/otherpage">Other Page</Link>
-          </header>
+          </navbar>
           <div>
             <Route exact path="/" component={Fib} />
             <Route path="/otherpage" component={OtherPage} />
